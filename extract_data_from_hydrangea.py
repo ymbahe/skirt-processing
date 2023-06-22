@@ -189,9 +189,12 @@ class Galaxy:
         Snapshot at which the galaxy is observed.
     isub : int
         Subhalo index of the galaxy.
+    exclusive : bool, optional
+        Load exclusively the particles belonging to this galaxy
+        (i.e. exclude interlopers). Default: False. **Not yet implemented.**
     """
 
-    def __init__(self, isim, isnap, isub):
+    def __init__(self, isim, isnap, isub, exclusive=False):
         sim = hy.Simulation(isim)
         snap_file = sim.get_snapshot_file(isnap)
         sub_file = sim.get_subfind_file(isnap)
@@ -203,6 +206,15 @@ class Galaxy:
         self.gas = hy.ReadRegion(snap_file, 0, self.centre, 0.05, exact=True)
         self.stars = hy.ReadRegion(snap_file, 4, self.centre, 0.05, exact=True)
 
+        # Additional work for exclusive galaxy extraction: need to read
+        # the galaxy's gas/stars IDs from Cantor, and match them against
+        # all IDs in the readregion. Then need to somehow make sure that any
+        # request for properties is filtered through the sublist of matched
+        # particles -- do this by modifying the self.ind_sel selection list
+        # inside ReadRegion
+        self.limit_to_galaxy_particles('gas', sim, isub)
+        self.limit_to_galaxy_particles('stars', sim, isub) 
+        
         # Some specific post-processing steps
         self.get_relative_coordinates()
         self.get_stellar_hsml()
@@ -211,6 +223,22 @@ class Galaxy:
         self.gas.entropy_cgs = self.gas.read_data('Entropy', units='cgs')
         self.gas.density_cgs = self.gas.read_data('Density', units='cgs')
 
+    def limit_to_galaxy_particles(self, pname, sim, isub):
+        """Limit the selection of particles to galaxy members.
+
+        THIS IS NOT IMPLEMENTED YET, CURRENTLY DOES NOTHING.
+
+        Parameters
+        ----------
+        pname : str
+            The name of the species to process ('gas' or 'stars').
+        sim : Simulation object
+            The simulation to which the scene and galaxy belongs.
+        isub : int
+            The (Subfind) subhalo index of the target galaxy.
+        """
+        return
+        
     def get_relative_coordinates(self):
         """
         Compute the offsets of star and gas particles from galaxy centre,
