@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A SKIRT parameter file © Astronomical Observatory, Ghent University -->
+<skirt-simulation-hierarchy type="MonteCarloSimulation" format="9" producer="SKIRT v9.0 (git 2633935 built on 28/09/2021 at 11:14:46)" time="2021-10-15T17:18:25.078">
+    <MonteCarloSimulation userLevel="Regular" simulationMode="ExtinctionOnly" numPackets="3e7">
+        <random type="Random">
+            <Random seed="0"/>
+        </random>
+        <units type="Units">
+            <ExtragalacticUnits fluxOutputStyle="Frequency"/>
+        </units>
+        <cosmology type="Cosmology">
+            <FlatUniverseCosmology redshift="0.073" reducedHubbleConstant="0.6777" matterDensityFraction="0.307"/>
+        </cosmology>
+        <sourceSystem type="SourceSystem">
+            <SourceSystem minWavelength="0.3 micron" maxWavelength="1 micron" wavelengths="0.55 micron" sourceBias="0.5">
+                <sources type="Source">
+                    <ParticleSource filename="XXX-STAR_FILE-XXX" importVelocity="false" importVelocityDispersion="false" useColumns="" sourceWeight="1" wavelengthBias="0.5">
+                        <smoothingKernel type="SmoothingKernel">
+                            <ScaledGaussianSmoothingKernel/>
+                        </smoothingKernel>
+                        <sedFamily type="SEDFamily">
+                            <BruzualCharlotSEDFamily imf="Chabrier" resolution="High"/>
+                        </sedFamily>
+                        <wavelengthBiasDistribution type="WavelengthDistribution">
+                            <LogWavelengthDistribution minWavelength="0.3 micron" maxWavelength="1 micron"/>
+                        </wavelengthBiasDistribution>
+                    </ParticleSource>
+                    <ParticleSource filename="XXX-HII_FILE-XXX" importVelocity="false" importVelocityDispersion="false" useColumns="" sourceWeight="1" wavelengthBias="0.5">
+                        <smoothingKernel type="SmoothingKernel">
+                            <ScaledGaussianSmoothingKernel/>
+                        </smoothingKernel>
+                        <sedFamily type="SEDFamily">
+                            <MappingsSEDFamily/>
+                        </sedFamily>
+                        <wavelengthBiasDistribution type="WavelengthDistribution">
+                            <LogWavelengthDistribution minWavelength="0.3 micron" maxWavelength="1 micron"/>
+                        </wavelengthBiasDistribution>
+                    </ParticleSource>
+                </sources>
+            </SourceSystem>
+        </sourceSystem>
+        <mediumSystem type="MediumSystem">
+            <MediumSystem numDensitySamples="100">
+                <photonPacketOptions type="PhotonPacketOptions">
+                    <PhotonPacketOptions forceScattering="true" minWeightReduction="1e4" minScattEvents="0" pathLengthBias="0.5"/>
+                </photonPacketOptions>
+                <extinctionOnlyOptions type="ExtinctionOnlyOptions">
+                    <ExtinctionOnlyOptions storeRadiationField="false"/>
+                </extinctionOnlyOptions>
+                <media type="Medium">
+                    <ParticleMedium filename="XXX-DUST_FILE-XXX" massFraction="1" importMetallicity="false" importTemperature="false" maxTemperature="0 K" importVelocity="false" importMagneticField="false" importVariableMixParams="false" useColumns="">
+                        <smoothingKernel type="SmoothingKernel">
+                            <ScaledGaussianSmoothingKernel/>
+                        </smoothingKernel>
+                        <materialMix type="MaterialMix">
+                            <ZubkoDustMix numSilicateSizes="5" numGraphiteSizes="5" numPAHSizes="5"/>
+                        </materialMix>
+                    </ParticleMedium>
+                </media>
+                <grid type="SpatialGrid">
+                    <PolicyTreeSpatialGrid minX="-3e4 pc" maxX="3e4 pc" minY="-3e4 pc" maxY="3e4 pc" minZ="-3e4 pc" maxZ="3e4 pc" treeType="OctTree">
+                        <policy type="TreePolicy">
+                            <DensityTreePolicy minLevel="3" maxLevel="11" maxDustFraction="1e-6" maxDustOpticalDepth="0" wavelength="0.55 micron" maxDustDensityDispersion="0" maxElectronFraction="1e-6" maxGasFraction="1e-6"/>
+                        </policy>
+                    </PolicyTreeSpatialGrid>
+                </grid>
+            </MediumSystem>
+        </mediumSystem>
+        <instrumentSystem type="InstrumentSystem">
+            <InstrumentSystem>
+                <defaultWavelengthGrid type="WavelengthGrid">
+                    <PredefinedBandWavelengthGrid includeGALEX="false" includeSDSS="true" include2MASS="false" includeWISE="false" includeHERSCHEL="false"/>
+                </defaultWavelengthGrid>
+                <instruments type="Instrument">
+                    <FrameInstrument instrumentName="img-z" distance="0 Mpc" inclination="0 deg" azimuth="0 deg" roll="90 deg" fieldOfViewX="6e4 pc" numPixelsX="600" centerX="0 pc" fieldOfViewY="6e4 pc" numPixelsY="600" centerY="0 pc" recordComponents="false" numScatteringLevels="0" recordPolarization="false" recordStatistics="false"/>
+                </instruments>
+            </InstrumentSystem>
+        </instrumentSystem>
+        <probeSystem type="ProbeSystem">
+            <ProbeSystem>
+                <probes type="Probe">
+                    <SpatialGridConvergenceProbe probeName="conv" wavelength="0.55 micron"/>
+                    <LaunchedPacketsProbe probeName="num">
+                        <wavelengthGrid type="WavelengthGrid">
+                            <LogWavelengthGrid minWavelength="0.4 micron" maxWavelength="1 micron" numWavelengths="100"/>
+                        </wavelengthGrid>
+                    </LaunchedPacketsProbe>
+                    <TreeSpatialGridTopologyProbe probeName="grid"/>
+                </probes>
+            </ProbeSystem>
+        </probeSystem>
+    </MonteCarloSimulation>
+</skirt-simulation-hierarchy>

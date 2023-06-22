@@ -81,7 +81,8 @@ while read line; do
     ski_file="${prefix}.ski"
     fits_file="${prefix}_img-z_total.fits"
 
-    cp ski_template_${coda}_split-output.ski ${subhalo_dir}/${ski_file}
+    cp ./SKI_TEMPLATES/ski_template_${coda}_split-output.ski \
+       ${subhalo_dir}/${ski_file}
     cd ${subhalo_dir}
     sed -i "s/XXX-STAR_FILE-XXX/sim_stars.${isim}.${isnap}.${line}.txt/g" \
 	$ski_file
